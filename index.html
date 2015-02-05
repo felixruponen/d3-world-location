@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>D3 World Map Plotter</title>
+</head>
+<body>
+<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
+<script src="bower_components/datamaps/dist/datamaps.world.min.js"></script>
+<div id="container" style="position: relative; width: 1200px; height: 800px;"></div>
+<script>
+    var map = new Datamap({
+    	element: document.getElementById('container'),
+    	geographyConfig: {
+            highlightOnHover: false,
+            popupOnHover: false
+        },
+        fills: {
+        	defaultFill: '#EDDC4E'
+    	}
+    });
+
+    var locations = [];
+
+
+    d3.json("/locations", function(data) {
+    	console.log(data);
+    
+    	locations = data.map(function(element) {
+    		return {
+    			name: element.city ? element.city : element.country,
+    			radius: 10,
+    			country: element.country,
+    			latitude: element.ll[0],
+    			longitude: element.ll[1],
+    		}
+    	});
+
+    	map.bubbles(locations, {
+		    popupTemplate: function (geo, data) { 
+		            return ['<div class="hoverinfo">' +  data.name,
+		            '<br/>Country: ' +  data.country + '',
+		            '</div>'].join('');
+		    }
+		});
+
+    });
+
+    /*
+     var bombs = [{
+        name: 'Joe 4',
+        radius: 25,
+        yeild: 400,
+        country: 'USSR',
+        fillKey: 'RUS',
+        significance: 'First fusion weapon test by the USSR (not "staged")',
+        date: '1953-08-12',
+        latitude: 50.07,
+        longitude: 78.43
+      },{
+        name: 'RDS-37',
+        radius: 40,
+        yeild: 1600,
+        country: 'USSR',
+        fillKey: 'RUS',
+        significance: 'First "staged" thermonuclear weapon test by the USSR (deployable)',
+        date: '1955-11-22',
+        latitude: 50.07,
+        longitude: 78.43
+
+      },{
+        name: 'Tsar Bomba',
+        radius: 75,
+        yeild: 50000,
+        country: 'USSR',
+        fillKey: 'RUS',
+        significance: 'Largest thermonuclear weapon ever tested—scaled down from its initial 100 Mt design by 50%',
+        date: '1961-10-31',
+        latitude: 73.482,
+        longitude: 54.5854
+      }
+    ];
+	//draw bubbles for bombs
+	map.bubbles(bombs, {
+	    popupTemplate: function (geo, data) { 
+	            return ['<div class="hoverinfo">' +  data.name,
+	            '<br/>Payload: ' +  data.yeild + ' kilotons',
+	            '<br/>Country: ' +  data.country + '',
+	            '<br/>Date: ' +  data.date + '',
+	            '</div>'].join('');
+	    }
+	});
+*/
+
+</script>
+</body>
+</html>
